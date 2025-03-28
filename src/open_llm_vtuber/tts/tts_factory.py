@@ -108,6 +108,26 @@ class TTSFactory:
                 latency=kwargs.get("latency"),
                 base_url=kwargs.get("base_url"),
             )
+
+        elif engine_type == "fish_local_tts":
+            from .fish_local_tts import TTSEngine as FishLocalTTSEngine
+
+            return FishLocalTTSEngine(
+                api_key=kwargs.get("api_key"),
+                base_url=kwargs.get("base_url", "http://localhost:8080"),
+                reference_audio_paths=kwargs.get("reference_audio_paths", None),
+                reference_texts=kwargs.get("reference_texts", None),
+                format=kwargs.get("format", "wav"),
+                seed=kwargs.get("seed"),
+                streaming=kwargs.get("streaming", False),
+                use_memory_cache=kwargs.get("use_memory_cache", "off"),
+                chunk_length=kwargs.get("chunk_length", 200),
+                max_new_tokens=kwargs.get("max_new_tokens", 1024),
+                top_p=kwargs.get("top_p", 0.7),
+                repetition_penalty=kwargs.get("repetition_penalty", 1.2),
+                temperature=kwargs.get("temperature", 0.7),
+            )
+
         elif engine_type == "sherpa_onnx_tts":
             from .sherpa_onnx_tts import TTSEngine as SherpaOnnxTTSEngine
 

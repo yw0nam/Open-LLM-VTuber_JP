@@ -332,6 +332,41 @@ character_config:
       latency: 'balanced'
       base_url: 'https://api.fish.audio'
 
+    fish_api_tts:
+      # The API key for the Fish TTS API.
+      api_key: ''
+      # The reference ID for the voice to be used. Get it on the [Fish Audio website](https://fish.audio/).
+      reference_id: ''
+      # Either 'normal' or 'balanced'. balance is faster but lower quality.
+      latency: 'balanced'
+      base_url: 'https://api.fish.audio'
+
+    fish_local_tts:
+      # Base URL of your locally hosted FishTTS service
+      base_url: "http://localhost:50745"
+      # API key if required (leave empty for unauthenticated local usage)
+      api_key: ""
+      # Paths to reference audios, separated by <sep> for multiple files
+      reference_audio_paths: "./reference_audios/natsume/nat005_086-0.wav<sep>./reference_audios/natsume/nat002_057-0.wav"
+      # Matching reference texts, also separated by <sep>
+      reference_texts: >
+        だいたい、お子様舌とかよく言うけど、未来の数が多くて味に対して敏感なだけなんだから。調べたことはないけど……。<sep>
+        うちの大学にもそういう子はたくさんいるし、行動に起こしている子も少なくないじゃない。男の子も女の子も……。
+      # Output format (wav, mp3, flac)
+      format: "wav"
+      # Deterministic generation seed. Set to null for random sampling
+      seed: null
+      # Enable streaming mode (useful for long generations)
+      streaming: false
+      # Use memory cache for reference encoding (on/off)
+      use_memory_cache: "off"
+      # TTS generation tuning
+      chunk_length: 200
+      max_new_tokens: 1024
+      top_p: 0.7
+      repetition_penalty: 1.2
+      temperature: 0.7
+      
     coqui_tts:
       # Name of the TTS model to use. If empty, will use default model
       # do 'tts --list_models' to list supported models for coqui-tts

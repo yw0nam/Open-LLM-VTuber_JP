@@ -225,6 +225,80 @@ class FishAPITTSConfig(I18nMixin):
         ),
     }
 
+class FishLocalTTSConfig(I18nMixin):
+    """Configuration for Fish Local TTS."""
+
+    base_url: str = Field(..., alias="base_url")
+    api_key: Optional[str] = Field(None, alias="api_key")
+
+    reference_audio_paths: Optional[str] = Field("", alias="reference_audio_paths")
+    reference_texts: Optional[str] = Field("", alias="reference_texts")
+
+    format: str = Field("wav", alias="format")
+    seed: Optional[int] = Field(None, alias="seed")
+    streaming: bool = Field(False, alias="streaming")
+    use_memory_cache: Literal["on", "off"] = Field("off", alias="use_memory_cache")
+    chunk_length: int = Field(200, alias="chunk_length")
+    max_new_tokens: int = Field(1024, alias="max_new_tokens")
+    top_p: float = Field(0.7, alias="top_p")
+    repetition_penalty: float = Field(1.2, alias="repetition_penalty")
+    temperature: float = Field(0.7, alias="temperature")
+
+    DESCRIPTIONS: ClassVar[Dict[str, Description]] = {
+        "base_url": Description(
+            en="Base URL for local Fish TTS server", zh="本地 Fish TTS 服务器的基础 URL"
+        ),
+        "api_key": Description(
+            en="API key for authentication (optional for local usage)",
+            zh="用于身份验证的 API 密钥（本地使用可选）"
+        ),
+        "reference_audio_paths": Description(
+            en="String of reference audio file paths, separated by <sep>",
+            zh="参考音频文件路径的字符串，用 <sep> 分隔"
+        ),
+        "reference_texts": Description(
+            en="String of reference texts, separated by <sep>",
+            zh="参考文本的字符串，用 <sep> 分隔"
+        ),
+        "format": Description(
+            en="Audio output format (wav, mp3, flac)",
+            zh="音频输出格式（wav、mp3、flac）"
+        ),
+        "seed": Description(
+            en="Seed for deterministic generation (None = randomized)",
+            zh="用于确定性生成的种子（None 表示随机）"
+        ),
+        "streaming": Description(
+            en="Whether to enable streaming audio synthesis",
+            zh="是否启用流式音频合成"
+        ),
+        "use_memory_cache": Description(
+            en="Whether to cache reference encodings in memory",
+            zh="是否在内存中缓存参考编码"
+        ),
+        "chunk_length": Description(
+            en="Chunk size for audio synthesis (in tokens)",
+            zh="音频合成的块大小（以 tokens 计）"
+        ),
+        "max_new_tokens": Description(
+            en="Maximum number of tokens to generate",
+            zh="最大生成 token 数"
+        ),
+        "top_p": Description(
+            en="Top-p sampling value (for diversity)",
+            zh="top-p 采样值（用于生成多样性）"
+        ),
+        "repetition_penalty": Description(
+            en="Penalty to avoid repeating phrases",
+            zh="避免重复短语的惩罚因子"
+        ),
+        "temperature": Description(
+            en="Sampling temperature (controls creativity)",
+            zh="采样温度（控制创造性）"
+        ),
+    }
+
+
 
 class CoquiTTSConfig(I18nMixin):
     """Configuration for Coqui TTS."""
@@ -315,6 +389,7 @@ class TTSConfig(I18nMixin):
         "x_tts",
         "gpt_sovits_tts",
         "fish_api_tts",
+        "fish_local_tts",
         "sherpa_onnx_tts",
     ] = Field(..., alias="tts_model")
 
@@ -328,6 +403,7 @@ class TTSConfig(I18nMixin):
     x_tts: Optional[XTTSConfig] = Field(None, alias="x_tts")
     gpt_sovits_tts: Optional[GPTSoVITSConfig] = Field(None, alias="gpt_sovits")
     fish_api_tts: Optional[FishAPITTSConfig] = Field(None, alias="fish_api_tts")
+    fish_local_tts: Optional[FishLocalTTSConfig] = Field(None, alias="fish_local_tts")
     sherpa_onnx_tts: Optional[SherpaOnnxTTSConfig] = Field(
         None, alias="sherpa_onnx_tts"
     )
@@ -353,6 +429,9 @@ class TTSConfig(I18nMixin):
         ),
         "fish_api_tts": Description(
             en="Configuration for Fish API TTS", zh="Fish API TTS 配置"
+        ),
+        "fish_local_tts": Description(
+            en="Configuration for Fish local TTS", zh="Fish local TTS 配置"
         ),
         "sherpa_onnx_tts": Description(
             en="Configuration for Sherpa Onnx TTS", zh="Sherpa Onnx TTS 配置"
@@ -384,6 +463,8 @@ class TTSConfig(I18nMixin):
             values.gpt_sovits_tts.model_validate(values.gpt_sovits_tts.model_dump())
         elif tts_model == "fish_api_tts" and values.fish_api_tts is not None:
             values.fish_api_tts.model_validate(values.fish_api_tts.model_dump())
+        elif tts_model == "fish_api_tts" and values.fish_api_tts is not None:
+            values.fish_local_tts.model_validate(values.fish_local_tts.model_dump())
         elif tts_model == "sherpa_onnx_tts" and values.sherpa_onnx_tts is not None:
             values.sherpa_onnx_tts.model_validate(values.sherpa_onnx_tts.model_dump())
 
